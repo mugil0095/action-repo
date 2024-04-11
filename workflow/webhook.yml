@@ -1,0 +1,30 @@
+name: Webhook
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    types: [opened, reopened, synchronize]
+  pull_request_review:
+    types: [submitted]
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+  issues:
+    types: [opened, reopened, closed]
+  issue_comment:
+    types: [created, edited, deleted]
+  schedule:
+    - cron: '*/15 * * * *' # Run every 15 minutes
+
+jobs:
+  send-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Webhook
+        uses: distributhor/webhook-action@v1
+        with:
+          url: 'YOUR_WEBHOOK_ENDPOINT'
+          method: 'POST'
+          content-type: 'application/json'
+          data: '{"event": "${{ github.event_name }}", "payload": "${{ toJson(github.event) }}" }'

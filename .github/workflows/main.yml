@@ -1,0 +1,31 @@
+name: GitHub Webhook
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  merge:
+    branches:
+      - main
+
+jobs:
+  webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send webhook
+        uses: actions/http-request-action@v2
+        with:
+          method: post
+          url: https://your-webhook-repo-endpoint.com/
+          headers: |
+            Content-Type: application/json
+          body: |
+            {
+              "action": "${{ github.event_name }}",
+              "sender": ${{ toJson(github.sender) }},
+              "repository": ${{ toJson(github.repository) }},
+              "ref": "${{ github.ref }}"
+            }
